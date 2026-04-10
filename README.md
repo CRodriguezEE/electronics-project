@@ -89,14 +89,6 @@ The project was developed around the following verification steps:
 4. Confirm the filtered output approximates a 60 Hz sinusoidal waveform.
 5. Compare measured waveform quality against the target THD specification.
 
-## Repository Contents
-- `schematics/` – inverter and LCL filter schematics
-- `calculations/` – LCL design math and resonant frequency calculations
-- `measurements/` – scope captures and waveform verification
-- `images/` – block diagram and hardware photos
-- `docs/` – report and supporting notes
-- `results/` – concise verification summary
-
 ## My Contributions
 As project lead, I was responsible for:
 - guiding inverter and LCL filter design decisions
