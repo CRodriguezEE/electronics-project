@@ -19,7 +19,7 @@ The system converts a DC input into a high-frequency PWM waveform through a MOSF
 - `results/` – concise verification summary
 
 ### Main Blocks
-- DC bus input
+- DC supply 
 - MOSFET H-bridge inverter
 - Unipolar SPWM control
 - Gate driver with dead time
