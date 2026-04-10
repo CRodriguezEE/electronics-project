@@ -11,7 +11,12 @@ As project lead for a four-person team, I contributed to the inverter filter des
 The system converts a DC input into a high-frequency PWM waveform through a MOSFET H-bridge. That waveform is then passed through an LCL filter made up of an inverter-side inductor, capacitor branch, and grid-side inductor. The filter reduces high-frequency switching content while allowing the 60 Hz output component to remain.
 
 ## Repository Contents
-
+- `schematics/` – inverter and LCL filter schematics
+- `calculations/` – LCL design math and resonant frequency calculations
+- `measurements/` – scope captures and waveform verification
+- `images/` – block diagram and hardware photos
+- `docs/` – report and supporting notes
+- `results/` – concise verification summary
 
 ### Main Blocks
 - DC bus input
