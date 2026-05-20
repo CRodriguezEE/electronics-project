@@ -1,14 +1,14 @@
-# Single-Phase DC-AC Inverter with LCL Filter
+# Single-Phase MOSFET H-Bridge Inverter with LCL Filter
 
-The project focuses on the design and implementation of a single-phase DC-AC inverter with an LCL output filter using a MOSFET H-bridge and unipolar sinusoidal pulse width modulation (SPWM). It was completed as part of Electronics Technical Project for the course ECE3155 at the University of Houston. The main objective of the design was to convert a DC input into a clean 60 Hz AC output while filtering high-frequency harmonics at the inverter output.
+This project documents the design, construction, and validation of a course-approved independent single-phase inverter prototype built for ECE 3155 at the University of Houston. The system used an Arduino UNO to generate unipolar SPWM control signals for a MOSFET H-bridge driven by IR2110 gate drivers, followed by an LCL output filter and resistive AC load.
 
-The inverter was designed for a switching frequency of 20 kHz and uses 300 ns dead time inserted between complementary MOSFET gate signals to protect against shoot-through. An LCL filter was added to the output stage to reduce switching harmonics while preserving the 60 Hz fundamental component. The performance target was a cleaner (low-harmonic) sinusoidal output, with total harmonic distortion (THD) goal of less than 5% at rated power.
+The inverter was tested from a 12 V DC bus, with switching behavior validated through staged LED-load testing, oscilloscope measurements, and final bench testing. The measured switching frequency was approximately 16.97 kHz, with 300 ns software dead time implemented between complementary gate signals.
 
-As project lead for a four-person team, I contributed to the inverter filter design process, coordinated integration of the power stage and filter stage, and participated in verification of PWM timing, dead time behavior, and filtered output performance.
+This repository includes schematics, calculations, hardware photos, measurement evidence, and troubleshooting notes. THD was not formally measured, while grid synchronization and closed-loop voltage regulation were not implemented in this version and are listed as future work.
 
 ## System Overview
 
-The system converts a DC input into a high-frequency PWM waveform through a MOSFET H-bridge. That waveform is then passed through an LCL filter made up of an inverter-side inductor, capacitor branch, and grid-side inductor. The filter reduces high-frequency switching content while allowing the 60 Hz output component to remain.
+The system converts a DC input into a high-frequency PWM waveform through a MOSFET H-bridge. That waveform is then passed through an LCL filter made up of an inverter-side inductor, capacitor branch, and grid-side inductor. The filter was used to reduce high-frequency switching content and produce a smoother sinusoidal-like output waveform under resistive load testing.
 
 ## Repository Contents
 - `schematics/` – inverter and LCL filter schematics
@@ -28,77 +28,71 @@ The system converts a DC input into a high-frequency PWM waveform through a MOSF
 
 ## Key Specifications
 
-| Parameter | Value |
+| Parameter | Value / Status |
 |---|---|
-| Output Frequency | 60 Hz |
-| Switching Frequency | 20 kHz |
+| DC Bus Voltage | 12–15 V design range; validated at 12 V |
+| Switching Frequency | ~16.97 kHz measured; 20 kHz design target |
 | Modulation | Unipolar SPWM |
-| Dead Time | 300 ns |
-| Inverter-Side Inductor (L1) | 1.8 mH |
-| Filter Capacitor (C) | 2.2 µF film, 250 VAC rated |
-| Grid-Side Inductor (L2) | 0.6 mH |
-| LCL Resonant Frequency | ~5.06 kHz |
-| Damping Resistor | 3–5 Ω in series with capacitor branch |
-| Gate Drive Voltage | 12–15 V |
-| Gate Resistor | 10–22 Ω per MOSFET |
-| MOSFET Vds Rating | at least 2× DC bus voltage |
-| MOSFET Rds(on) | < 50 mΩ |
-| MOSFET Turn-Off Delay | < 150 ns |
-| Test Load Resistance | 50–100 Ω |
-| DC Bus Capacitance | 1000–2200 µF |
-| Target THD | < 5% at rated power |
+| Dead Time | 300 ns software dead time |
+| Gate Driver | 2× IR2110 |
+| MOSFETs | 4× IRLZ44N |
+| Gate Drive Supply | 12 V during validation |
+| Logic Controller | Arduino UNO |
+| LCL Filter | 2.2 mH / 0.1 µF / 2.2 mH |
+| Load Type | Resistive load |
+| THD | Design target only; not formally measured |
+| Grid Synchronization | Not implemented |
+| Closed-Loop Control | Not implemented |
 
 ## Design Decisions
 
-### Why 20 kHz Switching Frequency?
-A switching frequency of 20 kHz was selected because it provides strong frequency separation between 60 Hz fundamental and the high frequency switching harmonics, improving harmonic attenuation. It also places the switching action near the upper edge of the audible range, which helps reduce audible noise from magnetic components. In addition, standard silicon MOSFETs can typically operate at this frequency with manageable switching losses.
+### Why a 20 kHz Switching Target?
+A 20 kHz switching frequency was used as the initial design target since it provides strong separation from the low-frequency output waveform and helps move switching noise near the upper edge of the audible range. During final validation, the Arduino UNO generated a measured switching frequency of approximately 16.97 kHz, which was used as the verified experimental result.
 
 ### Why 300 ns Dead Time?
 A dead time of 300 ns was selected to prevent shoot-through, where both MOSFETs in the same inverter leg conduct at the same time and create a short across the DC bus. Since the MOSFET turn-off delay is specified as less than 150 ns, 300 ns provides a reasonable safety margin to allow one device to turn off before the complementary device turns on. Too little dead time increases the risk of shoot-through, while too much dead time can distort the output waveform.
 
 ### Why an LCL Filter Was Used?
-An LCL filter was used since it provides stronger attenuation of switching harmonics than a simple LC filter while keeping the inductors at practical values. The intent was to place the resonant frequency above the 60 Hz output frequency and below the 20 kHz switching frequency so that the filter would reduce high-frequency ripple while preserving the fundamental output component.
+The intent was to place the filter response above the low-frequency output component and below the high-frequency switching region so that the filter would reduce switching ripple while preserving the desired output waveform shape.
 
 ### LCL Filter Design
-The selected filter values were:
 
-- L1 = 1.8 mH
-- C = 2.2 µF 
-- L2 = 0.6 mH
+The output-filter stage was documented using the following final referenced values:
 
-The capacitor value was set to 2.2 µF, and total inductance was divided between the inverter-side and grid-side inductors. 
+- L1 = 2.2 mH
+- C = 0.1 µF
+- L2 = 2.2 mH
 
-The resonant frequency was calculated using:
+Earlier design calculations used a different filter set of 1.8 mH / 2.2 µF / 0.6 mH and produced an estimated resonant frequency of approximately 5.06 kHz. Because the documentation contains both the earlier design values and the final referenced hardware values, the final resonant-frequency calculation is marked for follow-up verification.
 
-f_res = (1 / (2π)) * sqrt((L1 + L2) / (L1 * L2 * C))
+For this version of the README, the LCL filter is reported as a tested output-filtering stage. Final resonant-frequency documentation will be updated after the hardware setup is rechecked.
 
-Substituting the selected values:
+## Validation Summary
 
-f_res = (1 / (2π)) * sqrt((1.8e-3 + 0.6e-3) / ((1.8e-3) * (0.6e-3) * (2.2e-6)))
-      ≈ 5.06 kHz
+### Verified
+1. Arduino UNO generated unipolar SPWM switching signals at approximately 16.97 kHz.
+2. 300 ns software dead time was implemented between complementary MOSFET gate signals.
+3. IR2110 low-side and high-side switching behavior was validated through staged LED-load testing.
+4. Full H-bridge switching behavior was validated before integration with the LCL filter and resistive load.
+5. A smoother sinusoidal-like output waveform was observed after filtering under resistive load testing.
 
-A 3–5 Ω damping resistor was connected in series with the capacitor branch to damp resonance peaking and improve filter behavior.
-
-## Verification Goals
-
-The project was developed around the following verification steps:
-
-1. Verify PWM switching waveforms and proper complementary gate operation.
-2. Confirm 300 ns dead time is inserted correctly and that shoot-through is avoided.
-3. Integrate the LCL filter and observe harmonic attenuation at the output.
-4. Confirm the filtered output approximates a 60 Hz sinusoidal waveform.
-5. Compare measured waveform quality against the target THD specification.
+### Not Formally Measured
+1. Total harmonic distortion, THD.
+2. Final output frequency accuracy.
+3. Output power rating.
+4. Grid synchronization.
+5. Closed-loop voltage regulation.
 
 ## My Contributions
-As project lead, I was responsible for:
-- guiding inverter and LCL filter design decisions
-- selecting switching and passive component values
-- verification of PWM timing and dead time behavior
-- coordinating system integration across a four-person team
-- documenting specifications, design choices, and test milestones
+- Guided inverter, gate-drive, and LCL filter design decisions
+- Contributed to switching frequency, dead time, MOSFET, gate-driver, and passive component selection
+- Verified PWM timing and switching behavior using oscilloscope measurements; implemented 300 ns dead time in Arduino firmware
+- Supported staged validation from LED-load testing to full H-bridge and filtered-output testing
+- Documented troubleshooting of grounding, bootstrap charging, SD pin, and PWM assignment issues
 
-## Notes
-
-- This project was built for single-phase inverter design and harmonic filtering study.
-- Any claim of full grid synchronization should only be included if synchronization was explicitly implemented and verified.
-- THD should be reported as a target unless final measured data is available.
+## Current Status and Future Work
+- THD was treated as a design target but was not formally measured during final validation.
+- Grid synchronization and grid protection were outside the scope of this prototype.
+- Closed-loop voltage regulation was not implemented in this version.
+- Output power rating and final output frequency accuracy require additional characterization.
+- Future work includes gate-source waveform capture, switching-node measurements, PCB layout, and voltage-feedback control.
