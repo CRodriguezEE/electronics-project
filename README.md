@@ -44,13 +44,20 @@ The system converts a DC input into a high-frequency PWM waveform through a MOSF
 | Grid Synchronization | Not implemented |
 | Closed-Loop Control | Not implemented |
 
+## Instrumentation Used
+
+- Oscilloscope for switching-frequency and waveform validation
+- DC power supply for 12 V bus testing
+- Digital multimeter for continuity, voltage, and gate-driver supply checks
+- LED-load staging for initial switching validation before full H-bridge testing
+
 ## Design Decisions
 
 ### Why a 20 kHz Switching Target?
 A 20 kHz switching frequency was used as the initial design target since it provides strong separation from the low-frequency output waveform and helps move switching noise near the upper edge of the audible range. During final validation, the Arduino UNO generated a measured switching frequency of approximately 16.97 kHz, which was used as the verified experimental result.
 
 ### Why 300 ns Dead Time?
-A dead time of 300 ns was selected to prevent shoot-through, where both MOSFETs in the same inverter leg conduct at the same time and create a short across the DC bus. Since the MOSFET turn-off delay is specified as less than 150 ns, 300 ns provides a reasonable safety margin to allow one device to turn off before the complementary device turns on. Too little dead time increases the risk of shoot-through, while too much dead time can distort the output waveform.
+A dead time of ~300 ns was selected to prevent shoot-through, where both MOSFETs in the same inverter leg conduct at the same time and create a short across the DC bus. Since the MOSFET turn-off delay is specified as less than 150 ns, 300 ns provides a reasonable safety margin to allow one device to turn off before the complementary device turns on. Too little dead time increases the risk of shoot-through, while too much dead time can distort the output waveform.
 
 ### Why an LCL Filter Was Used?
 The intent was to place the filter response above the low-frequency output component and below the high-frequency switching region so that the filter would reduce switching ripple while preserving the desired output waveform shape.
@@ -70,7 +77,7 @@ For this version of the README, the LCL filter is reported as a tested output-fi
 ## Validation Summary
 
 ### Verified
-1. Arduino UNO generated unipolar SPWM switching signals at approximately 16.97 kHz.
+1. Arduino Uno-based switching control was validated at approximately 16.97 kHz during inverter testing.
 2. 300 ns software dead time was implemented between complementary MOSFET gate signals.
 3. IR2110 low-side and high-side switching behavior was validated through staged LED-load testing.
 4. Full H-bridge switching behavior was validated before integration with the LCL filter and resistive load.
