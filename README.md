@@ -2,7 +2,7 @@
 
 This project documents the design, construction, and validation of a course-approved independent single-phase inverter prototype built for ECE 3155 at the University of Houston. The system was designed for unipolar SPWM operation using an Arduino Uno, IR2110 gate drivers, a MOSFET H-bridge, and an LCL output filter.
 
-The inverter was tested from a 12 V DC bus, with switching behavior validated through staged LED-load testing, oscilloscope measurements, and final bench testing. The measured switching frequency was approximately 16.97 kHz, with 300 ns software dead time implemented between complementary gate signals.
+The inverter was tested from a 12 V DC bus, with switching behavior validated through staged LED-load testing, oscilloscope measurements, and final bench testing. The measured switching frequency was approximately 16.97 kHz, with ~300 ns software dead time implemented between complementary gate signals.
 
 This repository includes schematics, calculations, hardware photos, measurement evidence, and troubleshooting notes. THD was not formally measured, while grid synchronization and closed-loop voltage regulation were not implemented in this version and are listed as future work.
 
