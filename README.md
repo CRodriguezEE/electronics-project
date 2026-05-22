@@ -1,6 +1,6 @@
 # Single-Phase MOSFET H-Bridge Inverter with LCL Filter
 
-This project documents the design, construction, and validation of a course-approved independent single-phase inverter prototype built for ECE 3155 at the University of Houston. The system used an Arduino UNO to generate unipolar SPWM control signals for a MOSFET H-bridge driven by IR2110 gate drivers, followed by an LCL output filter and resistive AC load.
+This project documents the design, construction, and validation of a course-approved independent single-phase inverter prototype built for ECE 3155 at the University of Houston. The system was designed for unipolar SPWM operation using an Arduino Uno, IR2110 gate drivers, a MOSFET H-bridge, and an LCL output filter.
 
 The inverter was tested from a 12 V DC bus, with switching behavior validated through staged LED-load testing, oscilloscope measurements, and final bench testing. The measured switching frequency was approximately 16.97 kHz, with 300 ns software dead time implemented between complementary gate signals.
 
